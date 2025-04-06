@@ -24,8 +24,13 @@ public partial class CommonHelper
     /// Get email validation regex
     /// </summary>
     /// <returns>Regular expression</returns>
-    [GeneratedRegex(EMAIL_EXPRESSION, RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture, "en-US")]
-    public static partial Regex GetEmailRegex();
+private static readonly Regex _emailRegex = new Regex(
+    EMAIL_EXPRESSION,
+    RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture,
+    TimeSpan.FromSeconds(2));
+
+public static Regex GetEmailRegex() => _emailRegex;
+
 
     /// <summary>
     /// Ensures the subscriber email or throw.
