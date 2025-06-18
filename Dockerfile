@@ -1,21 +1,40 @@
-# create the build instance 
+# syntax=docker/dockerfile:1.4
+
+### --- Build Stage ---
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
-WORKDIR /src                                                                    
-COPY ./src ./
+# Set working directory
+WORKDIR /src
 
-# build solution   
+# Copy source code and NuGet config
+COPY ./src ./src
+COPY nuget.config ./nuget.config
+
+# Install envsubst
+RUN apk add --no-cache gettext
+
+# Secure restore with BuildKit secrets
+RUN --mount=type=secret,id=jf_username \
+    --mount=type=secret,id=jf_token \
+    export JF_USERNAME=$(cat /run/secrets/jf_username) && \
+    export JF_TOKEN=$(cat /run/secrets/jf_token) && \
+    envsubst < nuget.config > nuget.config.subst && \
+    cat nuget.config.subst && \
+    dotnet restore NopCommerce.sln --configfile nuget.config.subst && \
+    rm nuget.config.subst
+
+# Build the solution
 RUN dotnet build NopCommerce.sln --no-incremental -c Release
 
-# publish project
-WORKDIR /src/Presentation/Nop.Web   
+# Publish Nop.Web
+WORKDIR /src/Presentation/Nop.Web
 RUN dotnet publish Nop.Web.csproj -c Release -o /app/published
 
+# Setup directories and permissions
 WORKDIR /app/published
 
-RUN mkdir logs bin
-
-RUN chmod 775 App_Data \
+RUN mkdir logs bin && \
+    chmod 775 App_Data \
               App_Data/DataProtectionKeys \
               bin \
               logs \
@@ -27,29 +46,31 @@ RUN chmod 775 App_Data \
               wwwroot/images \
               wwwroot/images/thumbs \
               wwwroot/images/uploaded \
-			  wwwroot/sitemaps
+              wwwroot/sitemaps
 
-# create the runtime instance 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime 
+---
 
-# add globalization support
-RUN apk add --no-cache icu-libs icu-data-full
+### --- Runtime Stage ---
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
+
+# Install required dependencies
+RUN apk add --no-cache icu-libs icu-data-full \
+    && apk add tiff libgdiplus libc-dev tzdata --no-cache \
+    --repository http://dl-3.alpinelinux.org/alpine/edge/main/ \
+    --repository http://dl-3.alpinelinux.org/alpine/edge/community/
+
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-# installs required packages
-RUN apk add tiff --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ --allow-untrusted
-RUN apk add libgdiplus --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted
-RUN apk add libc-dev tzdata --no-cache
-
-# copy entrypoint script
+# Copy entrypoint script
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
 
 WORKDIR /app
 
+# Copy published output
 COPY --from=build /app/published .
 
 ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
-                            
-ENTRYPOINT "/entrypoint.sh"
+
+ENTRYPOINT ["/entrypoint.sh"]
