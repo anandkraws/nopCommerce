@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /src
 
 # Copy source code and NuGet config
-COPY ./src ./src
+COPY ./src/ ./
 COPY nuget.config ./nuget.config
 
 # Install envsubst
