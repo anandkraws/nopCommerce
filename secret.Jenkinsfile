@@ -23,7 +23,7 @@ pipeline {
                 --no-cache \
                 --secret id=jf_username,src=<(echo "$JF_USERNAME") \
                 --secret id=jf_token,src=<(echo "$JF_TOKEN") \
-                -t nopCommerce:prod .
+                -t nopcommerce:1.0.0 .
             '''
           }
         }
