@@ -48,7 +48,6 @@ RUN mkdir logs bin && \
               wwwroot/images/uploaded \
               wwwroot/sitemaps
 
----
 
 ### --- Runtime Stage ---
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
