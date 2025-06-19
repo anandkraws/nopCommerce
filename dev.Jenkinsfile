@@ -1,5 +1,7 @@
 @Library('mySharedLibrary@plugin') _
 
+def common
+
 pipeline {
     agent { label 'agent-nuget' }
     tools {
