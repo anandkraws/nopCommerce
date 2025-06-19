@@ -13,12 +13,14 @@ pipeline {
 
   stages {
 
-    stage('Restore NuGet Packages') {
+stage('Restore NuGet Packages') {
       steps {
-        echo 'Restoring NuGet packages...'
-        sh '''#!/bin/bash
-          dotnet restore ${SOLUTION_FILE} --configfile ${NUGET_CONFIG_FILE}
-        '''
+        withCredentials([string(credentialsId: 'jenkins-integration-awsingress', variable: 'JF_TOKEN')]) {
+          sh '''#!/bin/bash
+            dotnet restore ${SOLUTION_FILE} \
+              --configfile ${NUGET_CONFIG_FILE}
+          '''
+        }
       }
     }
 
