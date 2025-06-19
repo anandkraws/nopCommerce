@@ -74,8 +74,8 @@ stage('Pack Projects from Solution') {
                 type:'nuget',
                 path:"${NUGET_OUTPUT_DIR}/*.nupks"
             )
-        }
-      }
+        
+      
     }
   }
 
