@@ -73,7 +73,7 @@ stage('Pack Projects from Solution') {
             jfrog.publish(
                 env:'dev',
                 type:'nuget',
-                path:"${NUGET_OUTPUT_DIR}/*.nupks"
+                path:"${NUGET_OUTPUT_DIR}/*.nupkg"
             )
         }
       
