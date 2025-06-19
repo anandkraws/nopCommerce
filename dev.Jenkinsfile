@@ -8,7 +8,7 @@ pipeline {
     NUGET_CONFIG_FILE = 'nuget.config'
     JF_USERNAME = 'ajit'
     NUGET_OUTPUT_DIR = './nupkgs'
-    SOLUTION_FILE = 'NopCommerce.sln'
+    SOLUTION_FILE = 'src/NopCommerce.sln'
   }
 
   stages {
