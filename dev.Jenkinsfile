@@ -33,27 +33,23 @@ stage('Restore NuGet Packages') {
       }
     }
 
-    stage('Pack Selected Projects') {
-      steps {
-        echo 'Packing selected plugin projects into .nupkg files...'
-        sh '''#!/bin/bash
-          mkdir -p ${NUGET_OUTPUT_DIR}
+stage('Pack Projects from Solution') {
+  steps {
+    echo '📦 Packing all NuGet-packable projects from NopCommerce.sln ...'
+    sh '''#!/bin/bash
+      set -euo pipefail
 
-          # List of plugin projects to pack
-          PLUGINS=(
-            src/Plugins/Nop.Plugin.Misc.Omnisend/Nop.Plugin.Misc.Omnisend.csproj
-            src/Plugins/Nop.Plugin.Payments.Manual/Nop.Plugin.Payments.Manual.csproj
-            src/Plugins/Nop.Plugin.Shipping.UPS/Nop.Plugin.Shipping.UPS.csproj
-            # Add more .csproj paths here as needed
-          )
+      NUGET_OUTPUT_DIR="${NUGET_OUTPUT_DIR:-./nupkgs}"
+      mkdir -p "${NUGET_OUTPUT_DIR}"
 
-          for csproj in "${PLUGINS[@]}"; do
-            echo "Packing $csproj ..."
-            dotnet pack "$csproj" -c Release -o ${NUGET_OUTPUT_DIR}
-          done
-        '''
-      }
-    }
+      echo "🔍 Running dotnet pack on solution ..."
+      dotnet pack src/NopCommerce.sln -c Release -o "${NUGET_OUTPUT_DIR}"
+
+      echo "✅ All .nupkg files are located in ${NUGET_OUTPUT_DIR}"
+    '''
+  }
+}
+
 
     stage('Push NuGet Packages to Artifactory') {
       steps {
