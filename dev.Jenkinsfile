@@ -1,8 +1,10 @@
 @Library('mySharedLibrary@plugin') _
 
 pipeline {
-  agent { label 'agent-nuget' }
-
+    agent { label 'agent-nuget' }
+    tools {
+        jfrog 'myJFROG'
+    }
   environment {
     ARTIFACTORY_URL = 'https://aingress.jfrog.io/artifactory/api/nuget/nuget-local/'
     NUGET_CONFIG_FILE = 'nuget.config'
@@ -51,7 +53,7 @@ stage('Pack Projects from Solution') {
 }
 
 
-    stage('Push NuGet Packages to Artifactory') {
+    stage('Push to Artifactory') {
       steps {
         script{
             jfrog.publish(
