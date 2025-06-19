@@ -76,6 +76,7 @@ stage('Pack Projects from Solution') {
             )
         
       
+      }
     }
   }
 
