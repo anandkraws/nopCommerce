@@ -69,12 +69,13 @@ stage('Pack Projects from Solution') {
 
     stage('Docker Build (Nop.Web)') {
       steps {
+        script{
             jfrog.publish(
                 env:'dev',
                 type:'nuget',
                 path:"${NUGET_OUTPUT_DIR}/*.nupks"
             )
-        
+        }
       
       }
     }
