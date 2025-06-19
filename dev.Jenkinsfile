@@ -69,16 +69,11 @@ stage('Pack Projects from Solution') {
 
     stage('Docker Build (Nop.Web)') {
       steps {
-        echo 'Building Docker image for Nop.Web app...'
-        withCredentials([string(credentialsId: 'jenkins-integration-awsingress', variable: 'JF_TOKEN')]) {
-          sh '''#!/bin/bash
-            export DOCKER_BUILDKIT=1
-            docker build \
-              --no-cache \
-              --secret id=jf_username,src=<(echo "$JF_USERNAME") \
-              --secret id=jf_token,src=<(echo "$JF_TOKEN") \
-              -t nopcommerce:1.0.0 .
-          '''
+            jfrog.publish(
+                env:'dev',
+                type:'nuget',
+                path:"${NUGET_OUTPUT_DIR}/*.nupks"
+            )
         }
       }
     }
