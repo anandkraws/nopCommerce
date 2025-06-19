@@ -53,22 +53,6 @@ stage('Pack Projects from Solution') {
 
     stage('Push NuGet Packages to Artifactory') {
       steps {
-        echo 'Publishing .nupkg packages to JFrog Artifactory...'
-        withCredentials([string(credentialsId: 'jenkins-integration-awsingress', variable: 'JF_TOKEN')]) {
-          sh '''#!/bin/bash
-            for pkg in ${NUGET_OUTPUT_DIR}/*.nupkg; do
-              echo "Pushing $pkg ..."
-              dotnet nuget push "$pkg" \
-                --source "${ARTIFACTORY_URL}" \
-                --api-key "Basic $(echo -n ${JF_USERNAME}:${JF_TOKEN} | base64)"
-            done
-          '''
-        }
-      }
-    }
-
-    stage('Docker Build (Nop.Web)') {
-      steps {
         script{
             jfrog.publish(
                 env:'dev',
@@ -76,7 +60,22 @@ stage('Pack Projects from Solution') {
                 path:"${NUGET_OUTPUT_DIR}/*.nupkg"
             )
         }
-      
+      }
+    }
+
+    stage('Docker Build (Nop.Web)') {
+      steps {
+        echo 'Building Docker image for Nop.Web app...'
+        withCredentials([string(credentialsId: 'jenkins-integration-awsingress', variable: 'JF_TOKEN')]) {
+          sh '''#!/bin/bash
+            export DOCKER_BUILDKIT=1
+            docker build \
+              --no-cache \
+              --secret id=jf_username,src=<(echo "$JF_USERNAME") \
+              --secret id=jf_token,src=<(echo "$JF_TOKEN") \
+              -t nopcommerce:1.0.0 .
+          '''
+        }
       }
     }
   }
