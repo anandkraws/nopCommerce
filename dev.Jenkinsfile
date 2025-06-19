@@ -9,7 +9,7 @@ pipeline {
     ARTIFACTORY_URL = 'https://aingress.jfrog.io/artifactory/api/nuget/nuget-local/'
     NUGET_CONFIG_FILE = 'nuget.config'
     JF_USERNAME = 'ajit'
-    NUGET_OUTPUT_DIR = './nupkgs'
+    NUGET_OUTPUT_DIR = './test'
     SOLUTION_FILE = 'src/NopCommerce.sln'
   }
 
@@ -41,7 +41,7 @@ stage('Pack Projects from Solution') {
     sh '''#!/bin/bash
       set -euo pipefail
 
-      NUGET_OUTPUT_DIR="${NUGET_OUTPUT_DIR:-./nupkgs}"
+      NUGET_OUTPUT_DIR="${NUGET_OUTPUT_DIR:-./test}"
       mkdir -p "${NUGET_OUTPUT_DIR}"
 
       echo "🔍 Running dotnet pack on solution ..."
