@@ -1,2 +1,8 @@
-ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2
+#!/bin/sh
+
+# Optional symlink fix (if needed)
+ln -sf /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2
+
+# Start nopCommerce
 exec dotnet Nop.Web.dll
+

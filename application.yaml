@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  nopcommerce_web:
+    image: nopcommerce:1.0.0       # <-- use your prebuilt image here
+    container_name: nopcommerce
+    ports:
+      - "7777:80"                   # <-- access via http://localhost:7777
+    depends_on:
+      - nopcommerce_database
+
+  nopcommerce_database:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: nopcommerce_mssql_server
+    environment:
+      SA_PASSWORD: "nopCommerce_db_password"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    volumes:
+      - nopcommerce_data:/var/opt/mssql
+
+volumes:
+  nopcommerce_data:
+
