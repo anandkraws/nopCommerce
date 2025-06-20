@@ -37,36 +37,36 @@ pipeline {
         //   }
         // }
 
-        stage('Pack Projects from Solution') {
-          steps {
-            echo '📦 Packing all NuGet-packable projects from NopCommerce.sln ...'
-            sh '''#!/bin/bash
-              set -euo pipefail
+        // stage('Pack Projects from Solution') {
+        //   steps {
+        //     echo '📦 Packing all NuGet-packable projects from NopCommerce.sln ...'
+        //     sh '''#!/bin/bash
+        //       set -euo pipefail
 
-              NUGET_OUTPUT_DIR="${NUGET_OUTPUT_DIR:-./test}"
-              mkdir -p "${NUGET_OUTPUT_DIR}"
+        //       NUGET_OUTPUT_DIR="${NUGET_OUTPUT_DIR:-./test}"
+        //       mkdir -p "${NUGET_OUTPUT_DIR}"
 
-              echo "🔍 Running dotnet pack on solution ..."
-              dotnet pack src/NopCommerce.sln -c Release -o "${NUGET_OUTPUT_DIR}"
+        //       echo "🔍 Running dotnet pack on solution ..."
+        //       dotnet pack src/NopCommerce.sln -c Release -o "${NUGET_OUTPUT_DIR}"
 
-              echo "✅ All .nupkg files are located in ${NUGET_OUTPUT_DIR}"
-            '''
-          }
-        }
+        //       echo "✅ All .nupkg files are located in ${NUGET_OUTPUT_DIR}"
+        //     '''
+        //   }
+        // }
 
 
-        stage('Push .nupkg file') {
-          steps {
-            script{
-                creds = jfrog.getCredentials('dev')
-                jfrog.publish(
-                    env:'dev',
-                    type:'nuget',
-                    path:"${NUGET_OUTPUT_DIR}/*.nupkg"
-                )
-            }
-          }
-        }
+        // stage('Push .nupkg file') {
+        //   steps {
+        //     script{
+        //         creds = jfrog.getCredentials('dev')
+        //         jfrog.publish(
+        //             env:'dev',
+        //             type:'nuget',
+        //             path:"${NUGET_OUTPUT_DIR}/*.nupkg"
+        //         )
+        //     }
+        //   }
+        // }
 
         // stage('Docker Build (Nop.Web)') {
         //   steps {
