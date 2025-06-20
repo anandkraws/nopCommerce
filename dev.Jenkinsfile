@@ -95,7 +95,7 @@ pipeline {
                             credentials: creds,
                             dockerImage: 'nopcommerce:1.0.0', //could also include a tag 'local/image:customTag'
                             tag:'v1.0.0',
-                            projectPrefix: 'nopCommerce', //defaults to mahindra but can remove completely with '' or redefine
+                            projectPrefix: 'nopcommerce', //defaults to mahindra but can remove completely with '' or redefine
                             pushLatest: false, // defaults to true, will always push latest tag unless set to false
                         )
                     }
