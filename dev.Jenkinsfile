@@ -58,6 +58,7 @@ pipeline {
         stage('Push to Artifactory') {
           steps {
             script{
+                creds = jfrog.getCredentials('dev')
                 jfrog.publish(
                     env:'dev',
                     type:'nuget',
