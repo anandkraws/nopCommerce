@@ -55,18 +55,18 @@ pipeline {
         // }
 
 
-        // stage('Push .nupkg file') {
-        //   steps {
-        //     script{
-        //         creds = jfrog.getCredentials('dev')
-        //         jfrog.publish(
-        //             env:'dev',
-        //             type:'nuget',
-        //             path:"${NUGET_OUTPUT_DIR}/*.nupkg"
-        //         )
-        //     }
-        //   }
-        // }
+        stage('Push .nupkg file') {
+          steps {
+            script{
+                creds = jfrog.getCredentials('dev')
+                jfrog.publish(
+                    env:'dev',
+                    type:'nuget',
+                    path:"${NUGET_OUTPUT_DIR}/*.nupkg"
+                )
+            }
+          }
+        }
 
         // stage('Docker Build (Nop.Web)') {
         //   steps {
