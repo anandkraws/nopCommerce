@@ -28,14 +28,14 @@ pipeline {
           }
         }
 
-        stage('Build Solution') {
-          steps {
-            echo 'Building the solution in Release mode...'
-            sh '''#!/bin/bash
-              dotnet build ${SOLUTION_FILE} -c Release --no-incremental
-            '''
-          }
-        }
+        // stage('Build Solution') {
+        //   steps {
+        //     echo 'Building the solution in Release mode...'
+        //     sh '''#!/bin/bash
+        //       dotnet build ${SOLUTION_FILE} -c Release --no-incremental
+        //     '''
+        //   }
+        // }
 
         stage('Pack Projects from Solution') {
           steps {
