@@ -88,7 +88,7 @@ pipeline {
                 steps {
                     script {
                         //docker.build (local/myimage);
-                        creds = jfrog.getCredentials()
+                        creds = jfrog.getCredentials('dev')
                         jfrog.publish(
                             type: 'docker',
                             env: 'dev',
