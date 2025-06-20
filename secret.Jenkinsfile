@@ -15,23 +15,26 @@ pipeline {
               steps {
                 withCredentials([string(credentialsId: 'jenkins-integration-awsingress', variable: 'JF_TOKEN')]) {
                   script {
-                    sh '''#!/bin/bash
-                      set -euo pipefail
-                      
-                      echo "🔧 Fixing line endings and permissions for entrypoint.sh"
-                      sed -i 's/\\r$//' entrypoint.sh
-                      chmod +x entrypoint.sh
-                      file entrypoint.sh
-                      head -n 1 entrypoint.sh | od -c
-            
-                      echo "🐳 Building Docker image with BuildKit ..."
-                      export DOCKER_BUILDKIT=1
-                      docker build \
-                        --no-cache \
-                        --secret id=jf_username,src=<(echo "$JF_USERNAME") \
-                        --secret id=jf_token,src=<(echo "$JF_TOKEN") \
-                        -t nopcommerce:1.0.0 .
-                    '''
+sh '''
+          set -e
+
+          # Securely write secrets to temp files
+          jf_user_file=$(mktemp)
+          jf_token_file=$(mktemp)
+
+          cat <<< "$JF_USERNAME" > "$jf_user_file"
+          cat <<< "$JF_TOKEN" > "$jf_token_file"
+
+          # Docker BuildKit build with mounted secrets
+          DOCKER_BUILDKIT=1 docker build \
+            --no-cache \
+            --secret id=jf_username,src="$jf_user_file" \
+            --secret id=jf_token,src="$jf_token_file" \
+            -t demonuget:1.0.0 .
+
+          # Clean up
+          rm -f "$jf_user_file" "$jf_token_file"
+        '''
                   }
                 }
               }
