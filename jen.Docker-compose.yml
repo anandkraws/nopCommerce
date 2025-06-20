@@ -2,12 +2,15 @@ version: "3.8"
 
 services:
   nopcommerce_web:
-    image: nopcommerce:1.0.0       # <-- use your prebuilt image here
+    image: nopcommerce:1.0.0
     container_name: nopcommerce
     ports:
-      - "7777:80"                   # <-- access via http://localhost:7777
+      - "7777:80"
     depends_on:
       - nopcommerce_database
+    volumes:
+      - nopcommerce_appdata:/app/App_Data     # 👈 persist nopCommerce settings
+    restart: always                            # 👈 restart if stopped/exited
 
   nopcommerce_database:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -21,4 +24,5 @@ services:
 
 volumes:
   nopcommerce_data:
+  nopcommerce_appdata:
 
