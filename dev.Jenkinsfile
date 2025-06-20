@@ -55,7 +55,7 @@ pipeline {
         }
 
 
-        stage('Push to Artifactory') {
+        stage('Push .nupkg file') {
           steps {
             script{
                 creds = jfrog.getCredentials('dev')
