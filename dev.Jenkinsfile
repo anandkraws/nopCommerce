@@ -4,9 +4,9 @@ def common
 
 pipeline {
     agent { label 'agent-nuget' }
-    tools {
-        jfrog 'myJFROG'
-    }
+    // tools {
+    //     jfrog 'myJFROG'
+    // }
   environment {
     ARTIFACTORY_URL = 'https://aingress.jfrog.io/artifactory/api/nuget/nuget-local/'
     NUGET_CONFIG_FILE = 'nuget.config'
